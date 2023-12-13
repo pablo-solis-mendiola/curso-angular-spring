@@ -21,17 +21,19 @@ export class FormComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.loadClient();
-  }
-
-  public loadClient(): void {
+    
     this.route.params.subscribe((params) => {
       let id = Number(params['id']);
 
-      if (id === 0) {
+      if (id === 0 || isNaN(id)) {
         return;
       }
 
+      this.loadClient(id);
+    });
+  }
+
+  public loadClient(id: number): void {
       this.clienteService.getCliente(id).subscribe({
         next: (cliente: Cliente) => {
           // this.cliente.nombre = cliente.nombre;
@@ -40,18 +42,17 @@ export class FormComponent implements OnInit {
           this.cliente = cliente;
         },
       });
-    });
   }
 
   public save(): void {
     this.clienteService.saveCliente(this.cliente).subscribe({
       next: (cliente: Cliente) => {
         this.router.navigate(['/clientes']);
-        swal.fire(
-          "Nuevo cliente",
-          `Cliente ${cliente.nombre} ${cliente.apellido} creado exitosamente`,
-          "success"
-        );
+        swal.fire({
+          title: "Nuevo cliente",
+          text: `Cliente ${cliente.nombre} ${cliente.apellido} creado exitosamente`,
+          icon: "success"
+        });
       },
     });
   }
@@ -60,11 +61,11 @@ export class FormComponent implements OnInit {
     this.clienteService.updateCliente(this.cliente).subscribe({
       next: (cliente: Cliente) => {
         this.router.navigate(['/clientes']);
-        swal.fire(
-          "Actualización correcta",
-          `Cliente ${cliente.nombre} ${cliente.apellido} actualizado exitosamente`,
-          "success"
-        );
+        swal.fire({
+          title: "Actualización correcta",
+          text: `Cliente ${cliente.nombre} ${cliente.apellido} actualizado exitosamente`,
+          icon: "success"
+        });
       },
     });
   }

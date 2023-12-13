@@ -16,7 +16,7 @@ export class ClienteService {
 
   public getClientes(): Observable<Cliente[]> {
 
-    return this.http.get<Cliente[]>(`${this.baseUrl}/clientes`);
+    return this.http.get<Cliente[]>(`${this.baseUrl}/clientes`, { headers: this.httpHeaders });
     
     // Alternate Methods
 
@@ -30,7 +30,7 @@ export class ClienteService {
   }
 
   public getCliente(id: number): Observable<Cliente> {
-    return this.http.get<Cliente>(`${this.baseUrl}/clientes/${id}`);
+    return this.http.get<Cliente>(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders });
   }
 
   public updateCliente(cliente: Cliente): Observable<Cliente> {
@@ -39,5 +39,9 @@ export class ClienteService {
 
   public saveCliente(cliente: Cliente): Observable<Cliente> {
     return this.http.post<Cliente>(`${this.baseUrl}/clientes`, cliente, { headers: this.httpHeaders });
+  }
+
+  public deleteCliente(id: number): Observable<Cliente> {
+    return this.http.delete<Cliente>(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders });
   }
 }
