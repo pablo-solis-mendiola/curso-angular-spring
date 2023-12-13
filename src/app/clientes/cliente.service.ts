@@ -29,8 +29,12 @@ export class ClienteService {
     // * );
   }
 
-  getCliente(id: number): Observable<Cliente> {
+  public getCliente(id: number): Observable<Cliente> {
     return this.http.get<Cliente>(`${this.baseUrl}/clientes/${id}`);
+  }
+
+  public updateCliente(cliente: Cliente): Observable<Cliente> {
+    return this.http.put<Cliente>(`${this.baseUrl}/clientes/${cliente.id}`, cliente, { headers: this.httpHeaders });
   }
 
   public saveCliente(cliente: Cliente): Observable<Cliente> {
