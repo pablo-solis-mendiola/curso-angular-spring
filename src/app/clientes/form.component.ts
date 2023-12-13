@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Cliente } from './cliente';
 import { ClienteService } from './cliente.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-form',
@@ -15,12 +16,12 @@ export class FormComponent {
 
   public constructor(private clienteService: ClienteService, private router: Router) { }
 
-
   public save(): void {
     // console.log("Clicked!", this.cliente);
     this.clienteService.saveCliente(this.cliente).subscribe({ 
-      next: (res) => {
+      next: (cliente) => {
         this.router.navigate(["/clientes"]);
+        swal.fire("Nuevo cliente", `Cliente ${cliente.nombre} ${cliente.apellido} creado exitosamente`, 'success');
       }
     });
   }
