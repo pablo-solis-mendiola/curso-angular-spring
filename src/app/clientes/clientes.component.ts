@@ -9,9 +9,7 @@ import { ClienteService } from './cliente.service';
 export class ClientesComponent {
   clientes: Cliente[] = [];
 
-  constructor(private clienteService: ClienteService) {
-
-  }
+  constructor(private clienteService: ClienteService) {}
 
   ngOnInit() {
     this.clienteService.getClientes().subscribe(clientes => this.clientes = clientes);

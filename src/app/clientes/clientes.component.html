@@ -10,21 +10,26 @@
         
         <table class="table table-bordered table-striped table-hover">
             <thead>
-                <tr>
+                <tr class="text-primary">
                     <th scope="col">id</th>
                     <th scope="col">nombre</th>
                     <th scope="col">apellido</th>
                     <th scope="col">email</th>
                     <th scope="col">fecha</th>
+                    <th class="col">editar</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let cliente of clientes">
+                <tr *ngFor="let cliente of clientes" class="text-primary">
                     <th scope="row">{{ cliente.id }}</th>
                     <td>{{ cliente.nombre }}</td>
                     <td>{{ cliente.apellido }}</td>
                     <td>{{ cliente.email }}</td>
                     <td>{{ cliente.createAt }}</td>
+                    <td>
+                        <button class="btn btn-primary btn-rounded btn-sm" 
+                        type="button" role="button" [routerLink]="['/clientes/form', cliente.id]">Editar</button>
+                    </td>
                 </tr>
             </tbody>
         </table>
