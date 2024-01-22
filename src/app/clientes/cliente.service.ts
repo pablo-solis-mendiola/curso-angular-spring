@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { CLIENTES } from './clientes.json';
 import { Cliente } from './cliente';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-// import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
+import swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class ClienteService {
@@ -12,25 +14,32 @@ export class ClienteService {
 
   private httpHeaders: HttpHeaders = new HttpHeaders({ "Content-Type": "application/json" });
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   public getClientes(): Observable<Cliente[]> {
 
-    return this.http.get<Cliente[]>(`${this.baseUrl}/clientes`, { headers: this.httpHeaders });
+    // return this.http.get<Cliente[]>(`${this.baseUrl}/clientes`, { headers: this.httpHeaders });
     
     // Alternate Methods
 
     // Just using the keyword 'as' + the type to cast the Observable to
-    // * return this.http.get(`${this.baseUrl}/clientes`) as Observable<Cliente[]>;
+    // return this.http.get(`${this.baseUrl}/clientes`) as Observable<Cliente[]>;
 
     // (This one requires to import map from rxjs/operators)
-    // * return this.http.get(`${this.baseUrl}/clientes`).pipe(
-    // *         map(res => res as Cliente[])
-    // * );
+     return this.http.get<any>(`${this.baseUrl}/clientes`).pipe(
+             map(res => res.data as Cliente[])
+     );
   }
 
   public getCliente(id: number): Observable<Cliente> {
-    return this.http.get<Cliente>(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders });
+    return this.http.get<Cliente>(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders }).pipe(
+        catchError(err => {
+            this.router.navigate(['/clientes']);
+            console.error(err.error.mensaje);
+            swal.fire("Error al obtener cliente", err.error.mensaje, "error");
+            return throwError(()=> err);
+        })
+    );
   }
 
   public updateCliente(cliente: Cliente): Observable<Cliente> {
