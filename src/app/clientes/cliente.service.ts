@@ -32,25 +32,47 @@ export class ClienteService {
   }
 
   public getCliente(id: number): Observable<Cliente> {
-    return this.http.get<Cliente>(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders }).pipe(
-        catchError(err => {
+    return this.http.get<any>(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders }).pipe(
+        catchError(e => {
             this.router.navigate(['/clientes']);
-            console.error(err.error.mensaje);
-            swal.fire("Error al obtener cliente", err.error.mensaje, "error");
-            return throwError(()=> err);
-        })
+            console.error(e.error.mensaje);
+            swal.fire("Error al obtener cliente", e.error.mensaje, "error");
+            return throwError(()=> e);
+        }),
+        map(res => res.data as Cliente)
+    );
+  }
+
+  public saveCliente(cliente: Cliente): Observable<Cliente> {
+    return this.http.post<Cliente>(`${this.baseUrl}/clientes`, cliente, { headers: this.httpHeaders }).pipe(
+      catchError(e => {
+        console.error(e.error.mensaje);
+        swal.fire("Error al guardar cliente", e.error.mensaje, "error");
+        return throwError(() => e);
+      })
     );
   }
 
   public updateCliente(cliente: Cliente): Observable<Cliente> {
-    return this.http.put<Cliente>(`${this.baseUrl}/clientes/${cliente.id}`, cliente, { headers: this.httpHeaders });
-  }
-
-  public saveCliente(cliente: Cliente): Observable<Cliente> {
-    return this.http.post<Cliente>(`${this.baseUrl}/clientes`, cliente, { headers: this.httpHeaders });
+    return this.http.put<any>(`${this.baseUrl}/clientes/${cliente.id}`, cliente, { headers: this.httpHeaders }).pipe(
+        catchError(e => {
+          this.router.navigate(['/clientes']);
+          console.error(e.error.mensaje);
+          swal.fire("Error al obtener cliente", e.error.mensaje, "error");
+          return throwError(()=> e);
+        }),
+        map(res => res.data as Cliente)
+    );
   }
 
   public deleteCliente(id: number): Observable<Cliente> {
-    return this.http.delete<Cliente>(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders });
+    return this.http.delete<Cliente>(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders }).pipe(
+        catchError(e => {
+          this.router.navigate(['/clientes']);
+          console.error(e.error.mensaje);
+          swal.fire("Error al borrar cliente", e.error.mensaje, "error");
+          return throwError(()=> e);
+        })
+    );
   }
 }
