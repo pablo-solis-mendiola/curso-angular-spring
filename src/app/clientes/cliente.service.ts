@@ -26,47 +26,48 @@ export class ClienteService {
     // return this.http.get(`${this.baseUrl}/clientes`) as Observable<Cliente[]>;
 
     // (This one requires to import map from rxjs/operators)
-     return this.http.get<any>(`${this.baseUrl}/clientes`).pipe(
-             map(res => res.data as Cliente[])
+     return this.http.get(`${this.baseUrl}/clientes`).pipe(
+             map((res: any) => res.data as Cliente[])
      );
   }
 
   public getCliente(id: number): Observable<Cliente> {
-    return this.http.get<any>(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders }).pipe(
+    return this.http.get(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders }).pipe(
         catchError(e => {
             this.router.navigate(['/clientes']);
             console.error(e.error.mensaje);
             swal.fire("Error al obtener cliente", e.error.mensaje, "error");
             return throwError(()=> e);
         }),
-        map(res => res.data as Cliente)
+        map((res: any) => res.data as Cliente)
     );
   }
 
   public saveCliente(cliente: Cliente): Observable<Cliente> {
-    return this.http.post<Cliente>(`${this.baseUrl}/clientes`, cliente, { headers: this.httpHeaders }).pipe(
+    return this.http.post(`${this.baseUrl}/clientes`, cliente, { headers: this.httpHeaders }).pipe(
       catchError(e => {
         console.error(e.error.mensaje);
         swal.fire("Error al guardar cliente", e.error.mensaje, "error");
         return throwError(() => e);
-      })
+      }),
+      map((res: any) => res.data as Cliente)
     );
   }
 
   public updateCliente(cliente: Cliente): Observable<Cliente> {
-    return this.http.put<any>(`${this.baseUrl}/clientes/${cliente.id}`, cliente, { headers: this.httpHeaders }).pipe(
+    return this.http.put(`${this.baseUrl}/clientes/${cliente.id}`, cliente, { headers: this.httpHeaders }).pipe(
         catchError(e => {
           this.router.navigate(['/clientes']);
           console.error(e.error.mensaje);
           swal.fire("Error al obtener cliente", e.error.mensaje, "error");
           return throwError(()=> e);
         }),
-        map(res => res.data as Cliente)
+        map((res: any) => res.data as Cliente)
     );
   }
 
-  public deleteCliente(id: number): Observable<Cliente> {
-    return this.http.delete<Cliente>(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders }).pipe(
+  public deleteCliente(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders }).pipe(
         catchError(e => {
           this.router.navigate(['/clientes']);
           console.error(e.error.mensaje);
