@@ -9,71 +9,89 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class ClienteService {
+  private baseUrl: string = 'http://localhost:8080/api';
 
-  private baseUrl: string = "http://localhost:8080/api";
+  private httpHeaders: HttpHeaders = new HttpHeaders({
+    'Content-Type': 'application/json',
+  });
 
-  private httpHeaders: HttpHeaders = new HttpHeaders({ "Content-Type": "application/json" });
-
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {}
 
   public getClientes(): Observable<Cliente[]> {
-
     // return this.http.get<Cliente[]>(`${this.baseUrl}/clientes`, { headers: this.httpHeaders });
-    
+
     // Alternate Methods
 
     // Just using the keyword 'as' + the type to cast the Observable to
     // return this.http.get(`${this.baseUrl}/clientes`) as Observable<Cliente[]>;
 
     // (This one requires to import map from rxjs/operators)
-     return this.http.get(`${this.baseUrl}/clientes`).pipe(
-             map((res: any) => res.data as Cliente[])
-     );
+    return this.http
+      .get(`${this.baseUrl}/clientes`)
+      .pipe(map((res: any) => res.data as Cliente[]));
   }
 
   public getCliente(id: number): Observable<Cliente> {
-    return this.http.get(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders }).pipe(
-        catchError(e => {
-            this.router.navigate(['/clientes']);
-            console.error(e.error.mensaje);
-            swal.fire("Error al obtener cliente", e.error.mensaje, "error");
-            return throwError(()=> e);
+    return this.http
+      .get(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders })
+      .pipe(
+        catchError((e) => {
+          this.router.navigate(['/clientes']);
+          console.error(e.error.mensaje);
+          swal.fire('Error al obtener cliente', e.error.mensaje, 'error');
+          return throwError(() => e);
         }),
         map((res: any) => res.data as Cliente)
-    );
+      );
   }
 
   public saveCliente(cliente: Cliente): Observable<Cliente> {
-    return this.http.post(`${this.baseUrl}/clientes`, cliente, { headers: this.httpHeaders }).pipe(
-      catchError(e => {
-        console.error(e.error.mensaje);
-        swal.fire("Error al guardar cliente", e.error.mensaje, "error");
-        return throwError(() => e);
-      }),
-      map((res: any) => res.data as Cliente)
-    );
+    return this.http
+      .post(`${this.baseUrl}/clientes`, cliente, { headers: this.httpHeaders })
+      .pipe(
+        catchError((e) => {
+          if (e.status === 400) {
+            return throwError(() => e);
+          }
+
+          console.error(e.error.mensaje);
+          swal.fire('Error al guardar cliente', e.error.mensaje, 'error');
+          return throwError(() => e);
+        }),
+        map((res: any) => res.data as Cliente)
+      );
   }
 
   public updateCliente(cliente: Cliente): Observable<Cliente> {
-    return this.http.put(`${this.baseUrl}/clientes/${cliente.id}`, cliente, { headers: this.httpHeaders }).pipe(
-        catchError(e => {
+    return this.http
+      .put(`${this.baseUrl}/clientes/${cliente.id}`, cliente, {
+        headers: this.httpHeaders,
+      })
+      .pipe(
+        catchError((e) => {
+          if (e.status === 400) {
+            return throwError(() => e);
+          }
+
           this.router.navigate(['/clientes']);
           console.error(e.error.mensaje);
-          swal.fire("Error al obtener cliente", e.error.mensaje, "error");
-          return throwError(()=> e);
+          swal.fire('Error al obtener cliente', e.error.mensaje, 'error');
+          return throwError(() => e);
         }),
         map((res: any) => res.data as Cliente)
-    );
+      );
   }
 
   public deleteCliente(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders }).pipe(
-        catchError(e => {
+    return this.http
+      .delete(`${this.baseUrl}/clientes/${id}`, { headers: this.httpHeaders })
+      .pipe(
+        catchError((e) => {
           this.router.navigate(['/clientes']);
           console.error(e.error.mensaje);
-          swal.fire("Error al borrar cliente", e.error.mensaje, "error");
-          return throwError(()=> e);
+          swal.fire('Error al borrar cliente', e.error.mensaje, 'error');
+          return throwError(() => e);
         })
-    );
+      );
   }
 }
