@@ -13,6 +13,7 @@ export class FormComponent implements OnInit {
 
   // Model Data
   public cliente: Cliente = new Cliente();
+  public errores: string[] = [];
 
   public constructor(
     private clienteService: ClienteService,
@@ -54,6 +55,11 @@ export class FormComponent implements OnInit {
           icon: "success"
         });
       },
+      error: (err: any) => {
+        this.errores = err.error.errors as string[];
+        console.log(err.status);
+        console.log(err.error.errors);
+      }
     });
   }
 
